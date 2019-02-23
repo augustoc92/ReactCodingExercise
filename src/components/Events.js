@@ -8,22 +8,26 @@ import titleIcon from '../icons/vivid-angle-top-left.svg'
 import theme from '../style/theme'
 import Event from './Event'
 
-const Events = ({ classes, ready, events }) => (
-  <div className={classes.container}>
-    <h3 className={classes.title}>
-      <Icon className={classes.titleIcon} symbol={titleIcon} />
-      Results
-    </h3>
-    {!ready && <p>Loading...</p>}
-    {ready && (
-      <div className={classes.tilesWrapper}>
-        <div className={classes.tiles}>
-          {events.map(event => <Event key={event.id} className={classes.tile} content={event} />)}
+const Events = ({ classes, ready, events }) => {
+  const results = `Results: ${events.length} events found`
+
+  return (
+    <div className={classes.container}>
+      <h3 className={classes.title}>
+        <Icon className={classes.titleIcon} symbol={titleIcon} />
+        { results }
+      </h3>
+      {!ready && <p>Loading...</p>}
+      {ready && (
+        <div className={classes.tilesWrapper}>
+          <div className={classes.tiles}>
+            {events.map(event => <Event key={event.id} className={classes.tile} content={event} />)}
+          </div>
         </div>
-      </div>
-    )}
-  </div>
-)
+      )}
+    </div>
+  )
+}
 
 const mapStateToProps = (state) => ({
   ready: isEventsReady(state),
