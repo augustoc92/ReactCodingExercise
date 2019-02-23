@@ -6,7 +6,9 @@ export const fetchFavouritesActionCreator = promise => ({
   payload: promise
 })
 
-export const toggleFavouriteActionCreator = entityId => ({
-  type: TOGGLE_FAVOURITE_TYPE,
-  payload: { entityId }
-})
+export const toggleFavouriteActionCreator = entityId => {
+  return ({
+    type: TOGGLE_FAVOURITE_TYPE,
+    payload: { entityId }
+  })
+}
