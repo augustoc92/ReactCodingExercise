@@ -2,39 +2,56 @@ import React from 'react'
 import injectSheet from 'react-jss'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { getEvents, isEventsReady } from '../selectors'
+import { getEvents, isEventsReady, getEventsError } from '../selectors'
 import Icon from './Icon'
 import titleIcon from '../icons/vivid-angle-top-left.svg'
 import theme from '../style/theme'
 import Event from './Event'
 import Spinner from './ui/spinner'
 
-const Events = ({ classes, ready, events }) => {
-  const results = `Results: ${events.length} events found`
-
+const Events = (state) => {
+  const results = `Results: ${state.events.length} events found`
+  const { classes } = state
   return (
     <div className={classes.container}>
       <h3 className={classes.title}>
         <Icon className={classes.titleIcon} symbol={titleIcon} />
         { results }
       </h3>
-      {!ready &&
-        <div>
-          <p>Loading...</p>
-          <Spinner />
-        </div>}
-      {ready && (
-        <div className={classes.tilesWrapper}>
-          <div className={classes.tiles}>
-            {events.map(event => <Event key={event.id} className={classes.tile} content={event} />)}
-          </div>
-        </div>
-      )}
+      { checkState(state) }
     </div>
   )
 }
 
+const checkState = ({ ready, error, classes, events }) => {
+  if (!ready && error) {
+    return (
+      <div className={classes.error}>
+        App could not load because of the following error { error.message } contact the administrator
+      </div>
+    )
+  }
+  if (!ready) {
+    return (
+      <div>
+        <p>Loading...</p>
+        <Spinner />
+      </div>
+    )
+  }
+  if (ready) {
+    return (
+      <div className={classes.tilesWrapper}>
+        <div className={classes.tiles}>
+          {events.map(event => <Event key={event.id} className={classes.tile} content={event} />)}
+        </div>
+      </div>
+    )
+  }
+}
+
 const mapStateToProps = (state) => ({
+  error: getEventsError(state),
   ready: isEventsReady(state),
   events: getEvents(state)
 })
@@ -69,6 +86,11 @@ export default compose(
         flexWrap: 'wrap',
         justifyContent: 'flex-start'
       }
+    },
+    error: {
+      color: 'red',
+      fontSize: '35px',
+      fontFamily: 'rift, Impact, Haettenschweiler, Helvetica Inserat, Arial Narrow, sans serif'
     },
 
     tile: {
