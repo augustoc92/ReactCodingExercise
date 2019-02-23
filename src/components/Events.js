@@ -7,6 +7,7 @@ import Icon from './Icon'
 import titleIcon from '../icons/vivid-angle-top-left.svg'
 import theme from '../style/theme'
 import Event from './Event'
+import Spinner from './ui/spinner'
 
 const Events = ({ classes, ready, events }) => {
   const results = `Results: ${events.length} events found`
@@ -17,7 +18,11 @@ const Events = ({ classes, ready, events }) => {
         <Icon className={classes.titleIcon} symbol={titleIcon} />
         { results }
       </h3>
-      {!ready && <p>Loading...</p>}
+      {!ready &&
+        <div>
+          <p>Loading...</p>
+          <Spinner />
+        </div>}
       {ready && (
         <div className={classes.tilesWrapper}>
           <div className={classes.tiles}>
