@@ -19,15 +19,11 @@ const putFavourites = async (Id) => {
     }
   })
   const data = await response.json()
-  const favourites = data
-
-  if (!response.ok || !favourites) {
+  if (!response.ok || !data) {
     const error = new Error(get(data, ['error', 'message']) || 'Failed to update favourites')
     error.status = response.status
     throw error
   }
-
-  return favourites
 }
 
 const deleteFavourites = async (Id) => {
@@ -40,15 +36,11 @@ const deleteFavourites = async (Id) => {
     }
   })
   const data = await response.json()
-  const favourites = data
-
-  if (!response.ok || !favourites) {
-    const error = new Error(get(data, ['error', 'message']) || 'Failed to update favourites')
+  if (!response.ok || !data) {
+    const error = new Error(get(data, ['error', 'message']) || 'Failed to delete favourites')
     error.status = response.status
     throw error
   }
-
-  return favourites
 }
 
 export default toggleFavouriteId
