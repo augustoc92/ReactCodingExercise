@@ -2,7 +2,6 @@
 import get from 'lodash/get'
 import { fetchFavouritesActionCreator, REHYDRATED } from '../actions'
 import { getFavouritesApiUrl } from '../selectors/config'
-// import qs from 'query-string'
 
 const fetchFavourites = async (apiUrl) => {
   let url = apiUrl
@@ -13,9 +12,9 @@ const fetchFavourites = async (apiUrl) => {
   })
 
   const data = await response.json()
-  const favourites = get(data, ['results', 'favourites'])
+  const favourites = data
 
-  if (!response.ok || !data.success || !favourites) {
+  if (!response.ok || !favourites) {
     const error = new Error(get(data, ['error', 'message']) || 'Failed to fetch favourites')
     error.status = response.status
     throw error
@@ -24,9 +23,10 @@ const fetchFavourites = async (apiUrl) => {
   return favourites
 }
 
+// REHYDRATED WILL BE TRIGGER  BOTH STORES ACTION
+// AND FETCH DATA ONCE FOR THE APP WHEN LAUNCHED
 export default store => next => action => {
   const ret = next(action)
-
   if (action.type === REHYDRATED) {
     const state = store.getState()
     const apiUrl = getFavouritesApiUrl(state)

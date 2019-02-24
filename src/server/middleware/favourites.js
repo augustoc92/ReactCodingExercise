@@ -11,7 +11,6 @@ router.put('/:id', (req, res) => {
   if (favourites.indexOf(id) < 0) {
     favourites.push(id)
   }
-
   res.json(favourites)
 })
 

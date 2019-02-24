@@ -5,3 +5,4 @@ export const isFavouritedSelector = (state, id) => {
   }
   return false
 }
+export const getFavourites = state => state.favourites.favourites

@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import injectSheet from 'react-jss'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import { isFavouritedSelector } from '../selectors'
+import { isFavouritedSelector, getFavourites } from '../selectors'
 import { toggleFavouriteActionCreator } from '../actions'
 import theme from '../style/theme'
 import facebookIcon from '../icons/facebook.svg'
@@ -24,7 +24,7 @@ const popupWindowProps = url => ({
   }
 })
 
-const ShareButtons = ({ children, classes, className, url, title, isFavourited, toggleFavourited }) => {
+const ShareButtons = ({ children, classes, className, url, title, isFavourited, toggleFavourited, favourites }) => {
   const social = [{
     ...popupWindowProps(`https://facebook.com/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}`),
     icon: facebookIcon,
@@ -35,6 +35,10 @@ const ShareButtons = ({ children, classes, className, url, title, isFavourited, 
     text: 'Twitter'
   }]
 
+  const handleFavourites = () => {
+    toggleFavourited(favourites)
+  }
+
   return <div className={className}>
     {map(social, ({ url, icon, text, onClick }) =>
       <a key={text} className={classes.socialLink} href={url} target='_blank' rel='noopener noreferrer' onClick={onClick}>
@@ -42,7 +46,7 @@ const ShareButtons = ({ children, classes, className, url, title, isFavourited, 
         <span className='sr-only'>{text}</span>
       </a>
     )}
-    <button className={classNames(classes.socialLink, classes.favouriteButton)} type='button' onClick={toggleFavourited}>
+    <button className={classNames(classes.socialLink, classes.favouriteButton)} type='button' onClick={handleFavourites}>
       <span className={classNames(classes.favouriteIconHolder, isFavourited && classes.favouritedIconHolder, !isFavourited && classes.unfavouritedIconHolder)}>
         <Icon className={classNames(classes.favouriteIcon, classes.fullHeartIcon)} symbol={heartIcon} />
         <Icon className={classNames(classes.favouriteIcon, classes.emptyHeartIcon)} symbol={emptyHeartIcon} />
@@ -54,13 +58,14 @@ const ShareButtons = ({ children, classes, className, url, title, isFavourited, 
 
 function mapStateToProps (state, { id }) {
   return {
-    isFavourited: isFavouritedSelector(state, id)
+    isFavourited: isFavouritedSelector(state, id),
+    favourites: getFavourites(state)
   }
 }
 
 function mapDispatchToProps (dispatch, { id }) {
   return {
-    toggleFavourited: () => dispatch(toggleFavouriteActionCreator(id))
+    toggleFavourited: (favs) => dispatch(toggleFavouriteActionCreator(favs, id))
   }
 }
 
